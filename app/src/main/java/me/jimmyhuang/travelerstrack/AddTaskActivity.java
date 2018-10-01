@@ -1,5 +1,7 @@
 package me.jimmyhuang.travelerstrack;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +23,8 @@ import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import me.jimmyhuang.travelerstrack.database.TaskDatabase;
 import me.jimmyhuang.travelerstrack.model.Task;
 import me.jimmyhuang.travelerstrack.utility.AppExecutors;
+import me.jimmyhuang.travelerstrack.widget.TaskWidgetListProvider;
+import me.jimmyhuang.travelerstrack.widget.TaskWidgetProvider;
 
 public class AddTaskActivity extends AppCompatActivity {
 
@@ -126,6 +130,12 @@ public class AddTaskActivity extends AppCompatActivity {
                             }
                         });
                     }
+
+                    Intent widgetIntent = new Intent(mContext, TaskWidgetProvider.class);
+                    widgetIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                    int[] widgetIds = AppWidgetManager.getInstance(getApplication()).getAppWidgetIds(new ComponentName(getApplication(), TaskWidgetProvider.class));
+                    widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgetIds);
+                    sendBroadcast(widgetIntent);
                 } else {
                     Log.i(INPUT_ERROR, "Header " + mHeader + " Description " + mDescription);
                     Toast.makeText(mContext, getResources().getString(R.string.add_task_required), Toast.LENGTH_LONG).show();

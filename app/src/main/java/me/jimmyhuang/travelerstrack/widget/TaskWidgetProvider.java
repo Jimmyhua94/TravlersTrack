@@ -26,6 +26,8 @@ public class TaskWidgetProvider extends AppWidgetProvider {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, appWidgetId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setPendingIntentTemplate(R.id.task_widget_lv, pendingIntent);
 
+        AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(appWidgetId, R.id.task_widget_lv);
+
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 

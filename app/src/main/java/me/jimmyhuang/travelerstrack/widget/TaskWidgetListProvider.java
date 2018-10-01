@@ -25,6 +25,7 @@ public class TaskWidgetListProvider implements RemoteViewsService.RemoteViewsFac
     private int mAppWidgetId;
     private int mParentId;
     private Task mParent;
+    private boolean lock = false;
 
     public TaskWidgetListProvider(Context context, Intent intent) {
         mContext = context;
@@ -35,19 +36,16 @@ public class TaskWidgetListProvider implements RemoteViewsService.RemoteViewsFac
 
     @Override
     public void onCreate() {
-        AppExecutors.getsInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                TaskDatabase db = TaskDatabase.getsInstance(mContext);
-                mWidgetItemList = db.taskDao().loadChildren(mParentId);
-                mParent = db.taskDao().loadParent(mParentId);
-                AppWidgetManager.getInstance(mContext).notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.task_widget_lv);
-            }
-        });
+        AppWidgetManager.getInstance(mContext).notifyAppWidgetViewDataChanged(mAppWidgetId, R.id.task_widget_lv);
+
     }
 
     @Override
     public void onDataSetChanged() {
+        // Not on main thread
+        TaskDatabase db = TaskDatabase.getsInstance(mContext);
+        mWidgetItemList = db.taskDao().loadChildren(mParentId);
+        mParent = db.taskDao().loadParent(mParentId);
     }
 
     @Override
