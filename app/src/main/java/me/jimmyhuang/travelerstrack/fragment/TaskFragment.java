@@ -1,8 +1,12 @@
 package me.jimmyhuang.travelerstrack.fragment;
 
+import android.app.Application;
+import android.appwidget.AppWidgetManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ComponentName;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -26,6 +30,7 @@ import me.jimmyhuang.travelerstrack.database.ActivityViewModelFactory;
 import me.jimmyhuang.travelerstrack.database.TaskDatabase;
 import me.jimmyhuang.travelerstrack.model.Task;
 import me.jimmyhuang.travelerstrack.utility.AppExecutors;
+import me.jimmyhuang.travelerstrack.widget.TaskWidgetProvider;
 
 public class TaskFragment extends Fragment{
 
@@ -99,6 +104,11 @@ public class TaskFragment extends Fragment{
                                         deleteTasks(task);
                                     }
                                 });
+                                Intent widgetIntent = new Intent(getContext(), TaskWidgetProvider.class);
+                                widgetIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                                int[] widgetIds = AppWidgetManager.getInstance(getActivity().getApplication()).getAppWidgetIds(new ComponentName(getActivity().getApplication(), TaskWidgetProvider.class));
+                                widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgetIds);
+                                getActivity().sendBroadcast(widgetIntent);
                             }
                         });
                         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
